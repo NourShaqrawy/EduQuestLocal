@@ -33,3 +33,4 @@ Route::get('/courses/{course_id}/videos', [VideoController::class, 'index']);
 //         return 'Welcome Admin!';
 //     });
 // });
+//nour solution
