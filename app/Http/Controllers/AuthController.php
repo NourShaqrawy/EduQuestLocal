@@ -59,7 +59,7 @@ public function login(Request $request) {
 
     public function user(Request $request)
     {
-        return response()->json($request->user());// return data of user
+        return response()->json($request->user());
     }
 
 

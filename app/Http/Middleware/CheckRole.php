@@ -10,14 +10,14 @@ class CheckRole
 {
     public function handle(Request $request, Closure $next, string $role)
     {
-        // 1. التحقق من المصادقة
+       
         if (!Auth::guard('sanctum')->check()) {
             return response()->json([
                 'message' => 'غير مصرح بالوصول. يلزم تسجيل الدخول.'
             ], 401);
         }
 
-        // 2. الحصول على المستخدم
+      
         $user = Auth::guard('sanctum')->user();
 
         // 3. التحقق من الصلاحية
@@ -32,12 +32,12 @@ class CheckRole
 
     protected function checkUserRole($user, $requiredRole)
     {
-        // إذا كان المستخدم مديراً، فله كل الصلاحيات
+       
         if ($user->role === 'admin') {
             return true;
         }
 
-        // التحقق من الصلاحية المطلوبة
+       
         return $user->role === $requiredRole;
     }
 }

@@ -21,13 +21,13 @@ class CertificateController extends Controller
         $studentId = $validated['student_id'];
         $courseId = $validated['course_id'];
 
-        // Check if the student is enrolled in the course
+   
         $enrollment = Course::find($courseId)->enrollments()->where('student_id', $studentId)->first();
         if (!$enrollment) {
             return response()->json(['message' => 'Student is not enrolled in this course'], 403);
         }
 
-        // Retrieve all exercise submissions for the course
+       
         $submissions = Exercise_Submissions::where('student_id', $studentId)
             ->whereIn('exercise_id', function ($query) use ($courseId) {
                 $query->select('id')
@@ -40,15 +40,14 @@ class CertificateController extends Controller
             })
             ->get();
 
-        // Check if there are any submissions
+       
         if ($submissions->isEmpty()) {
             return response()->json(['message' => 'No submissions found for this course'], 400);
         }
 
-        // Calculate the average score
+       
         $averageScore = $submissions->avg('score');
-        $passingScore = 70; // Minimum passing score (configurable)
-
+        $passingScore = 70; 
         if ($averageScore < $passingScore) {
             return response()->json([
                 'message' => 'Student did not meet the passing score',
@@ -56,7 +55,7 @@ class CertificateController extends Controller
             ], 400);
         }
 
-        // Check if a certificate already exists
+       
         $existingCertificate = Certificate::where('student_id', $studentId)
             ->where('course_id', $courseId)
             ->first();
@@ -68,11 +67,11 @@ class CertificateController extends Controller
             ], 200);
         }
 
-        // Issue a new certificate
+        
         $certificate = Certificate::create([
             'student_id' => $studentId,
             'course_id' => $courseId,
-            'certificate_code' => Str::random(16), // Generate a unique certificate code
+            'certificate_code' => Str::random(16), 
         ]);
 
         return response()->json([

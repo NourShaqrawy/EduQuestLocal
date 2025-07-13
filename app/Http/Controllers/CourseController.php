@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\Auth;
 
 class CourseController extends Controller
 {
-    // عرض جميع الكورسات (موجود)
+    
     public function index()
     {
         $courses = Course::with(['videos', 'enrollments', 'certificates'])->get();
         return response()->json($courses);
     }
 
-    // إنشاء كورس جديد (موجود)
+    
     public function store(Request $request)
 {
     $validatedData = $request->validate([
@@ -25,26 +25,26 @@ class CourseController extends Controller
         'description' => 'nullable|string'
     ]);
 
-    // تأكد من أن publisher_id هو ID فقط وليس كائن المستخدم
-    $validatedData['publisher_id'] = Auth::id(); // هذا سيعيد رقم ID فقط
+   
+    $validatedData['publisher_id'] = Auth::id(); 
 
     $course = Course::create($validatedData);
 
     return response()->json($course, 201);
 }
-    // عرض كورس معين (موجود)
+ 
     public function show($id)
     {
         $course = Course::with(['videos', 'enrollments', 'certificates'])->findOrFail($id);
         return response()->json($course);
     }
 
-    // تحديث كورس (جديد)
+    
     public function update(Request $request, $id)
     {
         $course = Course::findOrFail($id);
         
-        // التحقق من أن المستخدم هو الناشر أو مدير
+       
         if (Auth::user()->role !== 'admin' && Auth::id() !== $course->publisher_id) {
             return response()->json(['message' => 'غير مصرح بالتعديل على هذا الكورس'], 403);
         }
@@ -59,7 +59,7 @@ class CourseController extends Controller
         return response()->json($course);
     }
 
-    // حذف كورس (جديد)
+
     public function destroy($id)
     {
         $course = Course::findOrFail($id);

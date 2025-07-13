@@ -8,14 +8,14 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    // عرض جميع الفئات (GET)
+   
     public function index()
     {
         $categories = Category::all();
         return response()->json(['categories' => $categories], 200);
     }
 
-    // إنشاء فئة جديدة (POST)
+  
     public function store(Request $request)
     {
         $request->validate([
@@ -31,7 +31,7 @@ class CategoryController extends Controller
         return response()->json(['message' => 'تم إنشاء الفئة بنجاح', 'category' => $category], 201);
     }
 
-    // عرض فئة واحدة (GET)
+ 
     public function show($id)
     {
         $category = Category::find($id);
@@ -41,7 +41,7 @@ class CategoryController extends Controller
         return response()->json(['category' => $category], 200);
     }
 
-    // تحديث فئة (PUT/PATCH)
+   
     public function update(Request $request, $id)
     {
         $category = Category::find($id);
@@ -62,7 +62,7 @@ class CategoryController extends Controller
         return response()->json(['message' => 'تم تحديث الفئة بنجاح', 'category' => $category], 200);
     }
 
-    // حذف فئة (DELETE)
+
     public function destroy($id)
     {
         $category = Category::find($id);
