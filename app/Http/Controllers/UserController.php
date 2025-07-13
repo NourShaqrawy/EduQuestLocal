@@ -13,22 +13,22 @@ class UserController extends Controller
     public function register(Request $request)
     {
 
-$request->validate([
-    'first_name'=>'required|string|max:255|',
-    'last_name'=>'required|string|max:255|',
-    'email'=>'required|string|email|max:255|unique:users,email',
-    'password'=>'required|string|min:8|confirmed'
-]);
-$user=User::create([
-    'first_name'=>$request->first_name,
-    'last_name'=>$request->last_name,
-    'email'=>$request->email,
-    'password'=>Hash::make($request->password)
-]);
-return response()->json([
-    'message'=>'User Registered  Successfully',
-    'user'=>$user
-], 201);
+        $request->validate([
+            'first_name' => 'required|string|max:255|',
+            'last_name' => 'required|string|max:255|',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8|confirmed'
+        ]);
+        $user = User::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password)
+        ]);
+        return response()->json([
+            'message' => 'User Registered  Successfully',
+            'user' => $user
+        ], 201);
     }
     // public function login(Request $request)
     // {
@@ -51,48 +51,40 @@ return response()->json([
 
     // }
     public function login(Request $request)
-{
-    $request->validate([
-        'email' => 'required|string|email',
-        'password' => 'required|string'
-    ]);
-
-    if (!Auth::attempt($request->only('email', 'password'))) {
-        return response()->json([
-            'message' => 'Invalid email or password'
-        ], 401);
-    }
-
-    $user = User::where('email', $request->email)->firstOrFail();
-
-    // ✅ تحقق من الدور هنا
-    if ($user->role === 'admin') {
-       return response()->json("admin",201);
-    } elseif ($user->role === 'student') {
-        // عمليات أو رد مخصص للطلاب
-    } elseif ($user->role === 'publisher') {
-        // عمليات أو رد مخصص للناشرين
-    }
-
-    // 🔐 إنشاء التوكن بعد التحقق من الدور (اختياري حسب منطقك)
-    $token = $user->createToken('auth_Token')->plainTextToken;
-
-    return response()->json([
-        'message' => 'Login Successful',
-        'role' => $user->role,
-        'user' => $user,
-        'Token' => $token
-    ], 200);
-}
-
-    public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-        return response()->json([
-            'message'=>'Logout  Successful'
-        ], 201);
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string'
+        ]);
 
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json([
+                'message' => 'Invalid email or password'
+            ], 401);
+        }
+
+        $user = User::where('email', $request->email)->firstOrFail();
+
+        // ✅ تحقق من الدور هنا
+        if ($user->role === 'admin') {
+            return response()->json("admin", 201);
+        } elseif ($user->role === 'student') {
+            // عمليات أو رد مخصص للطلاب
+        } elseif ($user->role === 'publisher') {
+            // عمليات أو رد مخصص للناشرين
+        }
+
+        // 🔐 إنشاء التوكن بعد التحقق من الدور (اختياري حسب منطقك)
+        $token = $user->createToken('auth_Token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Login Successful',
+            'role' => $user->role,
+            'user' => $user,
+            'Token' => $token
+        ], 200);
     }
+
 
 
 
@@ -171,18 +163,24 @@ return response()->json([
             ? response()->json(['message' => __($status)])
             : response()->json(['error' => __($status)], 400);
     }
+
+    // أضف هذه الدالة إلى UserController
+   public function updateSettings(Request $request)
+{
+    $validated = $request->validate([
+        'language' => 'sometimes|in:ar,en,fr',
+        'dark_mode' => 'sometimes|boolean'
+    ]);
+
+    $user = $request->user();
+    $user->update($validated);
+
+    return response()->json([
+        'message' => 'Settings updated successfully',
+        'settings' => [
+            'language' => $user->language,
+            'dark_mode' => $user->dark_mode
+        ]
+    ]);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}

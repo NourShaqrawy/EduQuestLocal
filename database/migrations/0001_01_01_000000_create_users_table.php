@@ -20,6 +20,8 @@ return new class extends Migration
             $table->enum('role',['student','publisher','admin'])->default('student');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+             $table->string('language', 10)->default('ar');
+            $table->boolean('dark_mode')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

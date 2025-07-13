@@ -21,7 +21,9 @@ class User extends Authenticatable
         'email',
         'address',
         'role',
-        'password', // تم إزالة 'name' لأنه غير موجود في الهيكل المطلوب
+        'password',
+        'language', // أضف هذا
+        'dark_mode' // أضف هذا// تم إزالة 'name' لأنه غير موجود في الهيكل المطلوب
     ];
 
     /**
@@ -34,6 +36,20 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isPublisher(): bool
+    {
+        return $this->role === 'publisher';
+    }
+
+    public function isStudent(): bool
+    {
+        return $this->role === 'student';
+    }
     /**
      * Get the attributes that should be cast.
      *
@@ -62,7 +78,7 @@ class User extends Authenticatable
     public function enrolledCourses()
     {
         return $this->belongsToMany(Course::class, 'course_enrollments', 'student_id', 'course_id')
-                    ->withTimestamps();
+            ->withTimestamps();
     }
 
     /**

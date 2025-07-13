@@ -14,11 +14,15 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
         \Illuminate\Http\Middleware\HandleCors::class,
-         'isAdmin' => \App\Http\Middleware\IsAdmin::class,
+          
         
     ]);
     $middleware->api(append: [
         \Illuminate\Http\Middleware\HandleCors::class,
+       
+    ]);
+     $middleware->alias([
+        'role' => \App\Http\Middleware\CheckRole::class,
     ]);
     
     })
